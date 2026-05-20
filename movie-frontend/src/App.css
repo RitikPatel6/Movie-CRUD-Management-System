@@ -1,0 +1,168 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f2f4f8;
+}
+
+.container {
+  width: 95%;
+  margin: auto;
+  padding: 30px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 36px;
+  color: #222;
+  margin-bottom: 30px;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+/* FORM BOX FULL WIDTH */
+.form-box {
+  width: 100%;
+  margin: 0 auto 40px auto;
+  background-color: white;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.15);
+}
+
+/* 3 COLUMN ROW FORMAT */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px 35px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #999;
+  border-radius: 6px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* BUTTON ROW */
+.button-row {
+  margin-top: 30px;
+}
+
+.submit-btn,
+.cancel-btn {
+  width: 150px;
+  padding: 15px;
+  margin-right: 10px;
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn {
+  background-color: #007bff;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+}
+
+.cancel-btn:hover {
+  background-color: #545b62;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* TABLE */
+.table-box {
+  margin-top: 30px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th {
+  background-color: #222;
+  color: white;
+  padding: 14px;
+}
+
+td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+td button {
+  padding: 8px 14px;
+  margin: 4px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  color: #222;
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: red;
+}
+
+.delete-btn:hover {
+  background-color: darkred;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
