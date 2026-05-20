@@ -5,6 +5,8 @@ import "./App.css";
 const API_URL = "http://localhost:5001/api/movies";
 
 function App() {
+  const [movies, setMovies] = useState<any[]>([]);
+
   const [movie, setMovie] = useState({
     movie_name: "",
     actor_name: "",
@@ -14,24 +16,19 @@ function App() {
     producer_name: "",
   });
 
-  const [movies, setMovies] = useState<any[]>([]);
-  const [error, setError] = useState("");
   const [editId, setEditId] = useState<number | null>(null);
 
+  // Get all movies
   const getMovies = async () => {
-    try {
-      const res = await axios.get(API_URL);
-      setMovies(res.data);
-      setError("");
-    } catch (err) {
-      setError("Backend server is not running or database connection failed");
-    }
+    const res = await axios.get(API_URL);
+    setMovies(res.data);
   };
 
   useEffect(() => {
     getMovies();
   }, []);
 
+  // Input change
   const handleChange = (e: any) => {
     setMovie({
       ...movie,
@@ -39,25 +36,7 @@ function App() {
     });
   };
 
-  const clearForm = () => {
-    setMovie({
-      movie_name: "",
-      actor_name: "",
-      actress_name: "",
-      release_date: "",
-      director_name: "",
-      producer_name: "",
-    });
-
-    setEditId(null);
-  };
-
-  const formatDate = (dateValue: string) => {
-    if (!dateValue) return "";
-
-    return dateValue.split("T")[0];
-  };
-
+  // Add or Update movie
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -69,52 +48,54 @@ function App() {
       !movie.director_name ||
       !movie.producer_name
     ) {
-      setError("All fields are required");
+      alert("All fields are required");
       return;
     }
 
-    try {
-      if (editId === null) {
-        await axios.post(API_URL, movie);
-        alert("Movie added successfully");
-      } else {
-        await axios.put(`${API_URL}/${editId}`, movie);
-        alert("Movie updated successfully");
-      }
-
-      clearForm();
-      getMovies();
-      setError("");
-    } catch (err) {
-      setError("Movie not saved. Please check backend.");
+    if (editId === null) {
+      await axios.post(API_URL, movie);
+      alert("Movie added successfully");
+    } else {
+      await axios.put(`${API_URL}/${editId}`, movie);
+      alert("Movie updated successfully");
     }
+
+    setMovie({
+      movie_name: "",
+      actor_name: "",
+      actress_name: "",
+      release_date: "",
+      director_name: "",
+      producer_name: "",
+    });
+
+    setEditId(null);
+    getMovies();
   };
 
-  const handleEdit = (m: any) => {
+  // Edit movie
+  const editMovie = (m: any) => {
     setEditId(m.id);
 
     setMovie({
       movie_name: m.movie_name,
       actor_name: m.actor_name,
       actress_name: m.actress_name,
-      release_date: formatDate(m.release_date),
+      release_date: m.release_date?.split("T")[0],
       director_name: m.director_name,
       producer_name: m.producer_name,
     });
   };
 
-  const handleDelete = async (id: number, movieName: string) => {
-    if (!confirm(`Are you sure you want to delete ${movieName} movie?`)) {
+  // Delete movie
+  const deleteMovie = async (id: number, name: string) => {
+    if (!confirm(`Are you sure you want to delete ${name} movie?`)) {
       return;
     }
 
-    try {
-      await axios.delete(`${API_URL}/${id}`);
-      setMovies(movies.filter((m) => m.id !== id));
-      alert("Movie deleted successfully");
-    } catch (err) {
-      setError("Movie not deleted. Please check backend.");
-    }
+    await axios.delete(`${API_URL}/${id}`);
+    alert("Movie deleted successfully");
+    getMovies();
   };
 
   return (
@@ -122,10 +103,6 @@ function App() {
       <h1>Movie CRUD Management System</h1>
 
       <div className="form-box">
-        {/* <h2>{editId === null ? "Add Movie" : "Edit Movie"}</h2> */}
-
-        {error && <p className="error">{error}</p>}
-
         <form onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="form-group">
@@ -133,9 +110,9 @@ function App() {
               <input
                 type="text"
                 name="movie_name"
-                placeholder="Enter movie name"
                 value={movie.movie_name}
                 onChange={handleChange}
+                placeholder="Enter movie name"
               />
             </div>
 
@@ -144,9 +121,9 @@ function App() {
               <input
                 type="text"
                 name="actor_name"
-                placeholder="Enter actor name"
                 value={movie.actor_name}
                 onChange={handleChange}
+                placeholder="Enter actor name"
               />
             </div>
 
@@ -155,9 +132,9 @@ function App() {
               <input
                 type="text"
                 name="actress_name"
-                placeholder="Enter actress name"
                 value={movie.actress_name}
                 onChange={handleChange}
+                placeholder="Enter actress name"
               />
             </div>
 
@@ -176,9 +153,9 @@ function App() {
               <input
                 type="text"
                 name="director_name"
-                placeholder="Enter director name"
                 value={movie.director_name}
                 onChange={handleChange}
+                placeholder="Enter director name"
               />
             </div>
 
@@ -187,24 +164,16 @@ function App() {
               <input
                 type="text"
                 name="producer_name"
-                placeholder="Enter producer name"
                 value={movie.producer_name}
                 onChange={handleChange}
+                placeholder="Enter producer name"
               />
             </div>
           </div>
 
-          <div className="button-row">
-            <button type="submit" className="submit-btn">
-              {editId === null ? "Submit Movie" : "Update Movie"}
-            </button>
-
-            {editId !== null && (
-              <button type="button" className="cancel-btn" onClick={clearForm}>
-                Cancel Edit
-              </button>
-            )}
-          </div>
+          <button type="submit" className="submit-btn">
+            {editId === null ? "Add Movie" : "Update Movie"}
+          </button>
         </form>
       </div>
 
@@ -237,14 +206,14 @@ function App() {
                   <td>{m.movie_name}</td>
                   <td>{m.actor_name}</td>
                   <td>{m.actress_name}</td>
-                  <td>{formatDate(m.release_date)}</td>
+                  <td>{m.release_date?.split("T")[0]}</td>
                   <td>{m.director_name}</td>
                   <td>{m.producer_name}</td>
                   <td>
                     <button
                       type="button"
                       className="edit-btn"
-                      onClick={() => handleEdit(m)}
+                      onClick={() => editMovie(m)}
                     >
                       Edit
                     </button>
@@ -252,7 +221,7 @@ function App() {
                     <button
                       type="button"
                       className="delete-btn"
-                      onClick={() => handleDelete(m.id, m.movie_name)}
+                      onClick={() => deleteMovie(m.id, m.movie_name)}
                     >
                       Delete
                     </button>

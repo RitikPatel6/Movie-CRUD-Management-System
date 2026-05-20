@@ -5,18 +5,10 @@ const mysql = require("mysql2");
 const app = express();
 const PORT = 5001;
 
-// Middleware
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
-
+app.use(cors());
 app.use(express.json());
 
-// Database connection
+// MySQL connection
 const db = mysql.createConnection({
   host: "localhost",
   user: "movie_user",
@@ -25,63 +17,38 @@ const db = mysql.createConnection({
   port: 3310,
 });
 
-// Database connect
 db.connect((err) => {
   if (err) {
     console.log("Database connection failed:", err.message);
-    return;
+  } else {
+    console.log("MySQL connected successfully");
   }
-
-  console.log("MySQL connected successfully");
 });
 
-// Test route
+// Home route
 app.get("/", (req, res) => {
-  res.send("Movie CRUD API is running");
+  res.send("Movie API is running");
 });
 
-// Get all movies
+// GET all movies
 app.get("/api/movies", (req, res) => {
   const sql = "SELECT * FROM movies ORDER BY id DESC";
 
   db.query(sql, (err, result) => {
     if (err) {
-      return res.status(500).json({
-        message: "Error fetching movies",
-        error: err.message,
-      });
+      return res.status(500).send("Error fetching movies");
     }
 
     res.json(result);
   });
 });
 
-// Add movie
+// POST add movie
 app.post("/api/movies", (req, res) => {
-  const {
-    movie_name,
-    actor_name,
-    actress_name,
-    release_date,
-    director_name,
-    producer_name,
-  } = req.body;
-
-  if (
-    !movie_name ||
-    !actor_name ||
-    !actress_name ||
-    !release_date ||
-    !director_name ||
-    !producer_name
-  ) {
-    return res.status(400).json({
-      message: "All fields are required",
-    });
-  }
+  const movie = req.body;
 
   const sql = `
-    INSERT INTO movies
+    INSERT INTO movies 
     (movie_name, actor_name, actress_name, release_date, director_name, producer_name)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
@@ -89,54 +56,27 @@ app.post("/api/movies", (req, res) => {
   db.query(
     sql,
     [
-      movie_name,
-      actor_name,
-      actress_name,
-      release_date,
-      director_name,
-      producer_name,
+      movie.movie_name,
+      movie.actor_name,
+      movie.actress_name,
+      movie.release_date,
+      movie.director_name,
+      movie.producer_name,
     ],
     (err, result) => {
       if (err) {
-        return res.status(500).json({
-          message: "Error adding movie",
-          error: err.message,
-        });
+        return res.status(500).send("Movie not added");
       }
 
-      res.status(201).json({
-        message: "Movie added successfully",
-        movieId: result.insertId,
-      });
+      res.send("Movie added successfully");
     }
   );
 });
 
-// Update movie
+// PUT update movie
 app.put("/api/movies/:id", (req, res) => {
-  const { id } = req.params;
-
-  const {
-    movie_name,
-    actor_name,
-    actress_name,
-    release_date,
-    director_name,
-    producer_name,
-  } = req.body;
-
-  if (
-    !movie_name ||
-    !actor_name ||
-    !actress_name ||
-    !release_date ||
-    !director_name ||
-    !producer_name
-  ) {
-    return res.status(400).json({
-      message: "All fields are required",
-    });
-  }
+  const id = req.params.id;
+  const movie = req.body;
 
   const sql = `
     UPDATE movies
@@ -152,62 +92,40 @@ app.put("/api/movies/:id", (req, res) => {
   db.query(
     sql,
     [
-      movie_name,
-      actor_name,
-      actress_name,
-      release_date,
-      director_name,
-      producer_name,
+      movie.movie_name,
+      movie.actor_name,
+      movie.actress_name,
+      movie.release_date,
+      movie.director_name,
+      movie.producer_name,
       id,
     ],
     (err, result) => {
       if (err) {
-        return res.status(500).json({
-          message: "Error updating movie",
-          error: err.message,
-        });
+        return res.status(500).send("Movie not updated");
       }
 
-      if (result.affectedRows === 0) {
-        return res.status(404).json({
-          message: "Movie not found",
-        });
-      }
-
-      res.json({
-        message: "Movie updated successfully",
-      });
+      res.send("Movie updated successfully");
     }
   );
 });
 
-// Delete movie
+// DELETE movie
 app.delete("/api/movies/:id", (req, res) => {
-  const { id } = req.params;
+  const id = req.params.id;
 
   const sql = "DELETE FROM movies WHERE id = ?";
 
   db.query(sql, [id], (err, result) => {
     if (err) {
-      return res.status(500).json({
-        message: "Error deleting movie",
-        error: err.message,
-      });
+      return res.status(500).send("Movie not deleted");
     }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        message: "Movie not found",
-      });
-    }
-
-    res.json({
-      message: "Movie deleted successfully",
-    });
+    res.send("Movie deleted successfully");
   });
 });
 
-// Server start
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

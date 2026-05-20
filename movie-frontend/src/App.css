@@ -26,7 +26,7 @@ h2 {
   color: #333;
 }
 
-/* FORM BOX FULL WIDTH */
+/* FORM BOX */
 .form-box {
   width: 100%;
   margin: 0 auto 40px auto;
@@ -36,11 +36,17 @@ h2 {
   box-shadow: 0 0 18px rgba(0, 0, 0, 0.15);
 }
 
-/* 3 COLUMN ROW FORMAT */
+/* FORM 3 COLUMN ROW FORMAT */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px 35px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
@@ -67,13 +73,14 @@ h2 {
 /* BUTTON ROW */
 .button-row {
   margin-top: 30px;
+  display: flex;
+  gap: 10px;
 }
 
 .submit-btn,
 .cancel-btn {
   width: 150px;
   padding: 15px;
-  margin-right: 10px;
   color: white;
   font-size: 18px;
   border: none;
@@ -97,6 +104,7 @@ h2 {
   background-color: #545b62;
 }
 
+/* ERROR */
 .error {
   color: red;
   text-align: center;
@@ -137,6 +145,7 @@ td button {
   cursor: pointer;
 }
 
+/* EDIT BUTTON */
 .edit-btn {
   background-color: #ffc107;
   color: #222;
@@ -146,6 +155,7 @@ td button {
   background-color: #e0a800;
 }
 
+/* DELETE BUTTON */
 .delete-btn {
   background-color: red;
 }
@@ -158,6 +168,10 @@ td button {
 @media (max-width: 900px) {
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .button-row {
+    flex-direction: column;
   }
 
   .submit-btn,
