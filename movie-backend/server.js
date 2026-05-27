@@ -10,9 +10,9 @@ app.use(express.json());
 
 // MySQL connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "movie_user",
-  password: "movie123",
+  host: "127.0.0.1",
+  user: "root",
+  password: "",
   database: "movie_crud_db",
   port: 3310,
 });
