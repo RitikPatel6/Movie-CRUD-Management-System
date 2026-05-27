@@ -5,7 +5,7 @@ import "./App.css";
 const API_URL = "http://localhost:5001/api/movies";
 
 function App() {
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState([]);
 
   const [movie, setMovie] = useState({
     movie_name: "",
@@ -16,7 +16,7 @@ function App() {
     producer_name: "",
   });
 
-  const [editId, setEditId] = useState<number | null>(null);
+  const [editId, setEditId] = useState(null);
 
   // Get all movies
   const getMovies = async () => {
@@ -29,7 +29,7 @@ function App() {
   }, []);
 
   // Input change
-  const handleChange = (e: any) => {
+  const handleChange = (e) => {
     setMovie({
       ...movie,
       [e.target.name]: e.target.value,
@@ -37,7 +37,7 @@ function App() {
   };
 
   // Add or Update movie
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
@@ -74,7 +74,7 @@ function App() {
   };
 
   // Edit movie
-  const editMovie = (m: any) => {
+  const editMovie = (m) => {
     setEditId(m.id);
 
     setMovie({
@@ -88,7 +88,7 @@ function App() {
   };
 
   // Delete movie
-  const deleteMovie = async (id: number, name: string) => {
+  const deleteMovie = async (id, name) => {
     if (!confirm(`Are you sure you want to delete ${name} movie?`)) {
       return;
     }
